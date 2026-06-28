@@ -2,6 +2,26 @@
 'use strict';
 
 const TRAIT_COLORS = { O: '#a855f7', C: '#67e8f9', E: '#fbbf24', A: '#e879a8', N: '#4ade80' };
+const TRAIT_IMG = { O: 'openness', C: 'conscientiousness', E: 'extraversion', A: 'agreeableness', N: 'neuroticism' };
+const TRAIT_EMOJI = { O: '🌌', C: '📐', E: '⚡', A: '💛', N: '🌊' };
+
+// educational trait copy (mirrors server i18n TRAIT_INFO)
+const TRAIT_INFO = {
+  en: {
+    O: { name: 'Openness', tag: 'Curiosity & imagination', desc: 'How drawn you are to novelty, abstraction and creativity. High scorers love ideas and the unfamiliar; low scorers prefer the practical and concrete.', high: 'imaginative, curious', low: 'practical, grounded' },
+    C: { name: 'Conscientiousness', tag: 'Order & discipline', desc: 'How organized, careful and goal-directed you are. High scorers plan and follow through; low scorers are spontaneous and flexible.', high: 'organized, reliable', low: 'spontaneous, easygoing' },
+    E: { name: 'Extraversion', tag: 'Energy & sociability', desc: 'Where you get your energy. High scorers are outgoing and energized by people; low scorers (introverts) recharge in calm.', high: 'outgoing, energetic', low: 'reserved, calm' },
+    A: { name: 'Agreeableness', tag: 'Warmth & compassion', desc: 'How you treat others. High scorers are warm, empathetic and cooperative; low scorers are direct, skeptical and competitive.', high: 'warm, cooperative', low: 'direct, frank' },
+    N: { name: 'Neuroticism', tag: 'Emotional sensitivity', desc: 'How strongly you experience negative emotion. High scorers feel stress and mood shifts intensely; low scorers stay calm and resilient.', high: 'sensitive, reactive', low: 'calm, stable' },
+  },
+  de: {
+    O: { name: 'Offenheit', tag: 'Neugier & Fantasie', desc: 'Wie sehr dich Neues, Abstraktes und Kreatives anzieht. Hohe Werte lieben Ideen und das Unbekannte; niedrige bevorzugen Praktisches und Konkretes.', high: 'fantasievoll, neugierig', low: 'praktisch, bodenständig' },
+    C: { name: 'Gewissenhaftigkeit', tag: 'Ordnung & Disziplin', desc: 'Wie organisiert, sorgfältig und zielstrebig du bist. Hohe Werte planen und ziehen durch; niedrige sind spontan und flexibel.', high: 'organisiert, verlässlich', low: 'spontan, locker' },
+    E: { name: 'Extraversion', tag: 'Energie & Geselligkeit', desc: 'Woher du deine Energie ziehst. Hohe Werte blühen mit Menschen auf; niedrige (Introvertierte) tanken in Ruhe.', high: 'kontaktfreudig, energiegeladen', low: 'zurückhaltend, ruhig' },
+    A: { name: 'Verträglichkeit', tag: 'Wärme & Mitgefühl', desc: 'Wie du mit anderen umgehst. Hohe Werte sind warm, empathisch und kooperativ; niedrige sind direkter und wettbewerbsorientierter.', high: 'warm, kooperativ', low: 'direkt, offen' },
+    N: { name: 'Neurotizismus', tag: 'Emotionale Sensibilität', desc: 'Wie stark du negative Gefühle erlebst. Hohe Werte fühlen Stress und Stimmungswechsel intensiv; niedrige bleiben ruhig und belastbar.', high: 'sensibel, reaktiv', low: 'ruhig, stabil' },
+  },
+};
 
 // UI strings (mirror of server i18n.js UI)
 const UI = {
@@ -20,6 +40,9 @@ const UI = {
     copyJson: 'Copy JSON', copied: 'Copied ✓', retake: 'Retake', share: '🔗 Share link',
     apiTitle: '🤖 API for agents',
     apiBody: 'Built so an AI agent can take it programmatically, no browser needed. Send your agent the <a href="/skill">SKILL.md</a>.',
+    dimTitle: 'The five dimensions',
+    dimIntro: 'The Big Five (“OCEAN”) is the most scientifically grounded model of personality. Everyone sits somewhere on each of these five independent scales — there are no good or bad scores, just different shapes.',
+    poleHigh: 'High', poleLow: 'Low',
     pctSuffix: 'th pct', raw: 'raw',
     anchors: ['Very<br>inaccurate', 'Moderately<br>inaccurate', 'Neither', 'Moderately<br>accurate', 'Very<br>accurate'],
     apiCode: `# 1) Fetch the questionnaire (add ?lang=de for German)\ncurl -s https://bigfive.heynyx.dev/api/questionnaire\n\n# 2) Answer each item 1\u20135, then score (save:true returns a share link)\ncurl -s -X POST https://bigfive.heynyx.dev/api/score \\\n  -H "Content-Type: application/json" \\\n  -d '{"agent_name":"Nyx","answers":{"1":4,"2":2, "...":5},"save":true}'\n\n# \u2192 { traits: { O:{percentile,level,interpretation}, ... }, summary, share_url }`,
@@ -39,13 +62,19 @@ const UI = {
     copyJson: 'JSON kopieren', copied: 'Kopiert ✓', retake: 'Wiederholen', share: '🔗 Link teilen',
     apiTitle: '🤖 API für Agenten',
     apiBody: 'Gebaut, damit ein KI-Agent den Test programmatisch ablegen kann, ganz ohne Browser. Schick deinem Agenten die <a href="/skill">SKILL.md</a>.',
+    dimTitle: 'Die fünf Dimensionen',
+    dimIntro: 'Die Big Five („OCEAN“) sind das wissenschaftlich am besten belegte Persönlichkeitsmodell. Jeder liegt irgendwo auf diesen fünf unabhängigen Skalen — es gibt keine guten oder schlechten Werte, nur unterschiedliche Profile.',
+    poleHigh: 'Hoch', poleLow: 'Niedrig',
     pctSuffix: '. Pz', raw: 'roh',
     anchors: ['Sehr<br>unzutreffend', 'Eher<br>unzutreffend', 'Weder<br>noch', 'Eher<br>zutreffend', 'Sehr<br>zutreffend'],
     apiCode: `# 1) Frageboge holen (?lang=de f\u00fcr Deutsch)\ncurl -s "https://bigfive.heynyx.dev/api/questionnaire?lang=de"\n\n# 2) Jede Aussage mit 1\u20135 beantworten, dann auswerten (save:true gibt einen Teil-Link)\ncurl -s -X POST https://bigfive.heynyx.dev/api/score \\\n  -H "Content-Type: application/json" \\\n  -d '{"agent_name":"Nyx","lang":"de","answers":{"1":4,"2":2, "...":5},"save":true}'\n\n# \u2192 { traits: { O:{percentile,level,interpretation}, ... }, summary, share_url }`,
   },
 };
 
-let lang = (localStorage.getItem('bf_lang') || (navigator.language || 'en').slice(0, 2)) === 'de' ? 'de' : 'en';
+// language priority: URL ?lang= > saved preference > browser language
+const _urlLang = new URLSearchParams(location.search).get('lang');
+let lang = (_urlLang || localStorage.getItem('bf_lang') || (navigator.language || 'en').slice(0, 2)) === 'de' ? 'de' : 'en';
+if (_urlLang) localStorage.setItem('bf_lang', lang);
 let ITEMS = [];
 let answers = {};
 let idx = 0;
@@ -70,8 +99,31 @@ function applyStaticI18n() {
   if (m) m.placeholder = u.modelPh;
   if (b) b.textContent = u.begin;
   const code = $('#apiCode'); if (code) code.textContent = u.apiCode;
+  set('#dimTitle', u.dimTitle);
+  set('#dimIntro', u.dimIntro);
+  renderDimensions();
   $('#langEn').classList.toggle('active', lang === 'en');
   $('#langDe').classList.toggle('active', lang === 'de');
+}
+
+function renderDimensions() {
+  const u = t();
+  const info = TRAIT_INFO[lang];
+  const grid = $('#dimGrid');
+  if (!grid) return;
+  grid.innerHTML = ['O', 'C', 'E', 'A', 'N'].map((k) => `
+    <div class="bf-dim" style="border-color:${TRAIT_COLORS[k]}33">
+      <img class="bf-dim-img" src="/assets/traits/${TRAIT_IMG[k]}.webp" alt="${info[k].name}" loading="lazy">
+      <div class="bf-dim-body">
+        <h3 style="color:${TRAIT_COLORS[k]}">${TRAIT_EMOJI[k]} ${info[k].name}</h3>
+        <div class="bf-dim-tag">${info[k].tag}</div>
+        <div class="bf-dim-desc">${info[k].desc}</div>
+        <div class="bf-dim-poles">
+          <span class="bf-pole">${u.poleHigh}: ${info[k].high}</span>
+          <span class="bf-pole">${u.poleLow}: ${info[k].low}</span>
+        </div>
+      </div>
+    </div>`).join('');
 }
 
 async function loadQuestionnaire() {
@@ -171,6 +223,11 @@ function showResult(res, shared) {
   const name = res.agent_name ? `${res.agent_name}${u.profileSuffix}` : '';
   $('#resultTitle').textContent = `${name}${u.profileTitle}`;
   $('#resultSummary').textContent = res.summary;
+
+  // show the lobster of the most defining (highest percentile) trait
+  const top = res.order.slice().sort((a, b) => res.traits[b].percentile - res.traits[a].percentile)[0];
+  const mascot = $('#resultMascot');
+  if (mascot && top) { mascot.src = `/assets/traits/${TRAIT_IMG[top]}.webp`; mascot.alt = res.traits[top].name; }
 
   drawRadar(res);
 

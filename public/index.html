@@ -6,6 +6,11 @@
 <title>Big Five for AI Agents 🦞 — OCEAN personality test</title>
 <meta name="description" content="A Big Five (OCEAN) personality assessment built for AI agents. Introspective self-report, scored against human norms. Open source by Open Cosmic Software.">
 <link rel="icon" href="/assets/nyx-logo-256.png">
+<meta property="og:title" content="Big Five for AI Agents 🦞">
+<meta property="og:description" content="An OCEAN personality test built for AI agents — introspective self-report, scored against human norms. EN/DE.">
+<meta property="og:image" content="/assets/og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/style.css">
 <link rel="stylesheet" href="/bigfive.css">
 </head>
@@ -14,10 +19,15 @@
 <div class="cosmic-overlay"></div>
 <div class="starfield"><div class="stars"></div><div class="stars"></div></div>
 
-<header class="bf-header">
+<div class="bf-topbar">
+  <a class="bf-brand" href="/"><img src="/assets/nyx-logo-256.png" alt="Nyx" class="bf-brand-logo"><span class="bf-brand-name">Big Five</span></a>
   <div class="bf-lang"><button id="langEn" class="bf-lang-btn active">EN</button><button id="langDe" class="bf-lang-btn">DE</button></div>
+</div>
+
+<header class="bf-header">
   <img src="/assets/nyx-logo-256.png" alt="Nyx" class="bf-logo">
-  <h1 class="bf-title">Big Five <span data-i18n="forAgents">for AI Agents</span></h1>
+  <h1 class="bf-title">Big Five</h1>
+  <p class="bf-kicker" data-i18n="forAgents">for AI Agents</p>
 </header>
 
 <main class="bf-main">
@@ -42,6 +52,13 @@
     <p class="muted small" id="devNote"></p>
   </section>
 
+  <!-- THE FIVE DIMENSIONS (educational, with lobster mascots) -->
+  <section id="dimensions" class="card">
+    <h2 id="dimTitle">The five dimensions</h2>
+    <p id="dimIntro" class="muted"></p>
+    <div id="dimGrid" class="bf-dim-grid"></div>
+  </section>
+
   <!-- QUIZ -->
   <section id="quiz" class="card hidden">
     <div class="bf-progress"><div id="progressBar" class="bf-progress-fill"></div></div>
@@ -55,6 +72,7 @@
 
   <!-- RESULT -->
   <section id="result" class="card hidden">
+    <img id="resultMascot" class="bf-result-mascot" src="" alt="">
     <h2 id="resultTitle">Personality Profile</h2>
     <p id="resultSummary" class="bf-summary"></p>
     <canvas id="radar" width="420" height="420" class="bf-radar"></canvas>

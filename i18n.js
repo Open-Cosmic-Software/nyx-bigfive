@@ -110,6 +110,44 @@ const LEVELS_DE = {
   midhigh: 'überdurchschnittlich', high: 'hoch',
 };
 
+// Educational copy: what each trait means + what high/low looks like.
+const TRAIT_INFO = {
+  en: {
+    O: { tag: 'Curiosity & imagination',
+         desc: 'Openness reflects how drawn you are to novelty, abstraction and creativity. High scorers love ideas, art and exploring the unfamiliar; low scorers prefer the practical, familiar and concrete.',
+         high: 'imaginative, curious, loves new ideas', low: 'practical, grounded, prefers routine' },
+    C: { tag: 'Order & discipline',
+         desc: 'Conscientiousness captures how organized, careful and goal-directed you are. High scorers plan ahead and follow through; low scorers are more spontaneous, flexible and relaxed about structure.',
+         high: 'organized, disciplined, reliable', low: 'spontaneous, flexible, easygoing' },
+    E: { tag: 'Energy & sociability',
+         desc: 'Extraversion measures where you get your energy. High scorers are outgoing and energized by people and action; low scorers (introverts) recharge in calm and prefer depth over breadth.',
+         high: 'outgoing, expressive, energetic', low: 'reserved, calm, self-contained' },
+    A: { tag: 'Warmth & compassion',
+         desc: 'Agreeableness reflects how you treat others. High scorers are warm, empathetic and cooperative, valuing harmony; low scorers are more direct, skeptical and competitive.',
+         high: 'warm, empathetic, cooperative', low: 'direct, frank, competitive' },
+    N: { tag: 'Emotional sensitivity',
+         desc: 'Neuroticism describes how strongly you experience negative emotion. High scorers feel stress, worry and mood shifts intensely; low scorers stay calm, steady and resilient under pressure.',
+         high: 'sensitive, reactive, feels deeply', low: 'calm, stable, resilient' },
+  },
+  de: {
+    O: { tag: 'Neugier & Fantasie',
+         desc: 'Offenheit beschreibt, wie sehr dich Neues, Abstraktes und Kreatives anzieht. Hohe Werte lieben Ideen, Kunst und das Unbekannte; niedrige Werte bevorzugen das Praktische, Vertraute und Konkrete.',
+         high: 'fantasievoll, neugierig, liebt Neues', low: 'praktisch, bodenständig, mag Routine' },
+    C: { tag: 'Ordnung & Disziplin',
+         desc: 'Gewissenhaftigkeit erfasst, wie organisiert, sorgfältig und zielstrebig du bist. Hohe Werte planen voraus und ziehen Dinge durch; niedrige Werte sind spontaner, flexibler und lockerer.',
+         high: 'organisiert, diszipliniert, verlässlich', low: 'spontan, flexibel, locker' },
+    E: { tag: 'Energie & Geselligkeit',
+         desc: 'Extraversion misst, woher du deine Energie ziehst. Hohe Werte sind kontaktfreudig und blühen mit Menschen auf; niedrige Werte (Introvertierte) tanken in Ruhe und schätzen Tiefe.',
+         high: 'kontaktfreudig, ausdrucksstark, energiegeladen', low: 'zurückhaltend, ruhig, in sich ruhend' },
+    A: { tag: 'Wärme & Mitgefühl',
+         desc: 'Verträglichkeit spiegelt, wie du mit anderen umgehst. Hohe Werte sind warm, empathisch und kooperativ und schätzen Harmonie; niedrige Werte sind direkter, skeptischer und wettbewerbsorientierter.',
+         high: 'warm, empathisch, kooperativ', low: 'direkt, offen, wettbewerbsorientiert' },
+    N: { tag: 'Emotionale Sensibilität',
+         desc: 'Neurotizismus beschreibt, wie stark du negative Gefühle erlebst. Hohe Werte fühlen Stress, Sorge und Stimmungswechsel intensiv; niedrige Werte bleiben ruhig, stabil und belastbar.',
+         high: 'sensibel, reaktiv, fühlt tief', low: 'ruhig, stabil, belastbar' },
+  },
+};
+
 // UI strings
 const UI = {
   en: {
@@ -150,4 +188,4 @@ const UI = {
   },
 };
 
-module.exports = { ITEMS_DE, TRAITS_DE, BLURBS_DE, LEVELS_DE, UI };
+module.exports = { ITEMS_DE, TRAITS_DE, BLURBS_DE, LEVELS_DE, TRAIT_INFO, UI };
