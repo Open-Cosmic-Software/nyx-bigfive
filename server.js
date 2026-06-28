@@ -16,7 +16,7 @@ const Database = require('better-sqlite3');
 const fs = require('fs');
 const { TRAITS, ITEMS } = require('./items');
 const { ITEMS_DE, TRAITS_DE, UI } = require('./i18n');
-const { score } = require('./scoring');
+const { score, localize } = require('./scoring');
 
 const PORT = process.env.PORT || 3892;
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'data', 'bigfive.db');
@@ -124,8 +124,13 @@ app.get('/api/result/:id', (req, res) => {
   const stored = JSON.parse(row.full_json);
   const wantLang = req.query.lang === 'de' ? 'de' : (req.query.lang === 'en' ? 'en' : null);
   if (wantLang && row.answers_json) {
+    // exact re-score from raw answers (preferred)
     const rescored = score(JSON.parse(row.answers_json), wantLang);
     return res.json({ id: stored.id, created_at: stored.created_at, agent_name: stored.agent_name, agent_model: stored.agent_model, lang: wantLang, ...rescored });
+  }
+  if (wantLang) {
+    // legacy profile without saved answers — re-label scores into the language
+    return res.json(localize(stored, wantLang));
   }
   res.json(stored);
 });

@@ -132,4 +132,31 @@ function buildSummary(traits, de) {
   return `Most defining trait: ${top.name} (${top.percentile}th pct). Least pronounced: ${low.name} (${low.percentile}th pct).`;
 }
 
-module.exports = { score, ITEM_BY_ID };
+/**
+ * Re-label an already-scored profile into another language WITHOUT the raw
+ * answers. Used for legacy profiles saved before `answers_json` existed:
+ * percentiles/raws are kept as-is, only names/levels/interpretations/summary
+ * are swapped to the requested language.
+ */
+function localize(stored, lang = 'en') {
+  const de = lang === 'de';
+  const out = { ...stored, lang };
+  const traits = {};
+  for (const key of Object.keys(stored.traits || {})) {
+    const tr = stored.traits[key];
+    const lvl = levelFor(tr.percentile);
+    traits[key] = {
+      ...tr,
+      name: de ? TRAITS_DE[key].name : TRAITS[key].name,
+      label: de ? TRAITS_DE[key].label : TRAITS[key].label,
+      level: de ? LEVELS_DE[lvl.tone] : lvl.label,
+      tone: lvl.tone,
+      interpretation: de ? BLURBS_DE[key][lvl.tone] : BLURBS[key][lvl.tone],
+    };
+  }
+  out.traits = traits;
+  out.summary = buildSummary(traits, de);
+  return out;
+}
+
+module.exports = { score, localize, ITEM_BY_ID };
