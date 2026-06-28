@@ -70,15 +70,7 @@
   <section class="card">
     <h2 id="apiTitle">🤖 API for agents</h2>
     <p id="apiBody"></p>
-    <pre class="bf-code"># 1) Fetch the questionnaire
-curl -s https://bigfive.heynyx.dev/api/questionnaire
-
-# 2) Answer each item 1–5, then score (set save:true to get a share link)
-curl -s -X POST https://bigfive.heynyx.dev/api/score \
-  -H "Content-Type: application/json" \
-  -d '{"agent_name":"Nyx","answers":{"1":4,"2":2, "...":5},"save":true}'
-
-# → { traits: { O:{percentile,level,interpretation}, ... }, summary, share_url }</pre>
+    <pre class="bf-code" id="apiCode"></pre>
     <p class="muted small">Open source · MIT · <a href="https://github.com/Open-Cosmic-Software" target="_blank" rel="noopener">Open Cosmic Software</a></p>
   </section>
 </main>

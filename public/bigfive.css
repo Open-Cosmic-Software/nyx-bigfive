@@ -1,12 +1,12 @@
 /* Big Five — page-specific styles 🦞 (builds on cosmic style.css) */
-.bf-header { text-align: center; padding: 48px 20px 12px; position: relative; }
+.bf-header { text-align: center; padding: 56px 20px 8px; position: relative; }
 .bf-lang { position: absolute; top: 18px; right: 18px; display: flex; gap: 4px; background: rgba(255,255,255,.05); border: 1px solid var(--glass-border); border-radius: 999px; padding: 3px; }
 .bf-lang-btn { background: transparent; border: none; color: var(--text-dim); font-weight: 700; font-size: .82rem; padding: 5px 12px; border-radius: 999px; cursor: pointer; transition: all .15s; }
 .bf-lang-btn.active { background: var(--grad); color: #fff; }
 .bf-logo { width: 78px; height: 78px; border-radius: 20px; box-shadow: 0 0 40px var(--glow-pink); margin-bottom: 14px; }
-.bf-title { font-size: clamp(2rem, 6vw, 3.2rem); font-weight: 800; background: var(--grad-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.05; }
-.bf-title span { display: block; font-size: 0.5em; font-weight: 600; -webkit-text-fill-color: var(--text-dim); }
-.bf-sub { color: var(--text-dim); margin-top: 10px; font-size: 1.05rem; }
+.bf-title { font-size: clamp(1.9rem, 5.5vw, 3rem); font-weight: 800; background: var(--grad-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.12; }
+.bf-title span { font-size: 0.46em; font-weight: 600; -webkit-text-fill-color: var(--text-dim); white-space: nowrap; }
+@media (max-width: 480px) { .bf-title span { display: block; margin-top: 2px; } }
 
 .bf-main { max-width: 760px; margin: 0 auto; padding: 24px 18px 80px; }
 .card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: 28px; margin-bottom: 22px; backdrop-filter: blur(12px); box-shadow: 0 8px 40px rgba(0,0,0,.3); }

@@ -34,9 +34,13 @@ db.exec(`
     o_pct INTEGER, c_pct INTEGER, e_pct INTEGER, a_pct INTEGER, n_pct INTEGER,
     o_raw REAL, c_raw REAL, e_raw REAL, a_raw REAL, n_raw REAL,
     completeness INTEGER,
+    answers_json TEXT,
     full_json   TEXT NOT NULL
   );
 `);
+// migrate: add answers_json column if upgrading an existing DB
+try { db.prepare('SELECT answers_json FROM results LIMIT 1').get(); }
+catch { db.exec('ALTER TABLE results ADD COLUMN answers_json TEXT'); }
 
 const app = express();
 app.use(express.json({ limit: '256kb' }));
@@ -97,13 +101,13 @@ app.post('/api/score', (req, res) => {
   if (save) {
     const t = result.traits;
     db.prepare(`INSERT INTO results
-      (id,agent_name,agent_model,created_at,o_pct,c_pct,e_pct,a_pct,n_pct,o_raw,c_raw,e_raw,a_raw,n_raw,completeness,full_json)
-      VALUES (@id,@agent_name,@agent_model,@created_at,@o_pct,@c_pct,@e_pct,@a_pct,@n_pct,@o_raw,@c_raw,@e_raw,@a_raw,@n_raw,@completeness,@full_json)`)
+      (id,agent_name,agent_model,created_at,o_pct,c_pct,e_pct,a_pct,n_pct,o_raw,c_raw,e_raw,a_raw,n_raw,completeness,answers_json,full_json)
+      VALUES (@id,@agent_name,@agent_model,@created_at,@o_pct,@c_pct,@e_pct,@a_pct,@n_pct,@o_raw,@c_raw,@e_raw,@a_raw,@n_raw,@completeness,@answers_json,@full_json)`)
       .run({
         id, agent_name: payload.agent_name, agent_model: payload.agent_model, created_at,
         o_pct: t.O.percentile, c_pct: t.C.percentile, e_pct: t.E.percentile, a_pct: t.A.percentile, n_pct: t.N.percentile,
         o_raw: t.O.raw, c_raw: t.C.raw, e_raw: t.E.raw, a_raw: t.A.raw, n_raw: t.N.raw,
-        completeness: result.completeness, full_json: JSON.stringify(payload),
+        completeness: result.completeness, answers_json: JSON.stringify(answers), full_json: JSON.stringify(payload),
       });
     payload.saved = true;
     payload.share_url = `/p/${id}`;
@@ -112,11 +116,18 @@ app.post('/api/score', (req, res) => {
   res.json(payload);
 });
 
-// Fetch a saved result as JSON
+// Fetch a saved result as JSON. ?lang=de|en re-renders names/interpretations
+// in the requested language (raw answers/scores are unchanged).
 app.get('/api/result/:id', (req, res) => {
-  const row = db.prepare('SELECT full_json FROM results WHERE id = ?').get(req.params.id);
+  const row = db.prepare('SELECT full_json, answers_json FROM results WHERE id = ?').get(req.params.id);
   if (!row) return res.status(404).json({ error: 'not found' });
-  res.json(JSON.parse(row.full_json));
+  const stored = JSON.parse(row.full_json);
+  const wantLang = req.query.lang === 'de' ? 'de' : (req.query.lang === 'en' ? 'en' : null);
+  if (wantLang && row.answers_json) {
+    const rescored = score(JSON.parse(row.answers_json), wantLang);
+    return res.json({ id: stored.id, created_at: stored.created_at, agent_name: stored.agent_name, agent_model: stored.agent_model, lang: wantLang, ...rescored });
+  }
+  res.json(stored);
 });
 
 // Aggregate stats across all saved agent profiles

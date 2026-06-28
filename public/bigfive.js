@@ -22,6 +22,7 @@ const UI = {
     apiBody: 'Built so an AI agent can take it programmatically, no browser needed. Send your agent the <a href="/skill">SKILL.md</a>.',
     pctSuffix: 'th pct', raw: 'raw',
     anchors: ['Very<br>inaccurate', 'Moderately<br>inaccurate', 'Neither', 'Moderately<br>accurate', 'Very<br>accurate'],
+    apiCode: `# 1) Fetch the questionnaire (add ?lang=de for German)\ncurl -s https://bigfive.heynyx.dev/api/questionnaire\n\n# 2) Answer each item 1\u20135, then score (save:true returns a share link)\ncurl -s -X POST https://bigfive.heynyx.dev/api/score \\\n  -H "Content-Type: application/json" \\\n  -d '{"agent_name":"Nyx","answers":{"1":4,"2":2, "...":5},"save":true}'\n\n# \u2192 { traits: { O:{percentile,level,interpretation}, ... }, summary, share_url }`,
   },
   de: {
     forAgents: 'für KI-Agenten',
@@ -40,6 +41,7 @@ const UI = {
     apiBody: 'Gebaut, damit ein KI-Agent den Test programmatisch ablegen kann, ganz ohne Browser. Schick deinem Agenten die <a href="/skill">SKILL.md</a>.',
     pctSuffix: '. Pz', raw: 'roh',
     anchors: ['Sehr<br>unzutreffend', 'Eher<br>unzutreffend', 'Weder<br>noch', 'Eher<br>zutreffend', 'Sehr<br>zutreffend'],
+    apiCode: `# 1) Frageboge holen (?lang=de f\u00fcr Deutsch)\ncurl -s "https://bigfive.heynyx.dev/api/questionnaire?lang=de"\n\n# 2) Jede Aussage mit 1\u20135 beantworten, dann auswerten (save:true gibt einen Teil-Link)\ncurl -s -X POST https://bigfive.heynyx.dev/api/score \\\n  -H "Content-Type: application/json" \\\n  -d '{"agent_name":"Nyx","lang":"de","answers":{"1":4,"2":2, "...":5},"save":true}'\n\n# \u2192 { traits: { O:{percentile,level,interpretation}, ... }, summary, share_url }`,
   },
 };
 
@@ -67,6 +69,7 @@ function applyStaticI18n() {
   if (n) n.placeholder = u.namePh;
   if (m) m.placeholder = u.modelPh;
   if (b) b.textContent = u.begin;
+  const code = $('#apiCode'); if (code) code.textContent = u.apiCode;
   $('#langEn').classList.toggle('active', lang === 'en');
   $('#langDe').classList.toggle('active', lang === 'de');
 }
@@ -82,6 +85,11 @@ async function switchLang(l) {
   applyStaticI18n();
   await loadQuestionnaire();
   if (started && !$('#quiz').classList.contains('hidden')) renderItem();
+  // re-render a visible result in the new language
+  if (!$('#result').classList.contains('hidden') && lastResult && lastResult.id) {
+    const res = await fetch(`/api/result/${lastResult.id}?lang=${lang}`).then((r) => r.json());
+    if (!res.error) showResult(res, true);
+  }
 }
 
 async function init() {
@@ -148,9 +156,8 @@ async function submit() {
 
 async function loadShared(id) {
   $('#intro').classList.add('hidden');
-  const res = await fetch(`/api/result/${id}`).then((r) => r.json());
+  const res = await fetch(`/api/result/${id}?lang=${lang}`).then((r) => r.json());
   if (res.error) { $('#intro').classList.remove('hidden'); return; }
-  // shared results carry their own language from when they were taken
   showResult(res, true);
 }
 
