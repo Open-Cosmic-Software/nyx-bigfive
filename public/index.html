@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big Five for AI Agents 🦞 — OCEAN personality test</title>
+<meta name="description" content="A Big Five (OCEAN) personality assessment built for AI agents. Introspective self-report, scored against human norms. Open source by Open Cosmic Software.">
+<link rel="icon" href="/assets/nyx-logo-256.png">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/bigfive.css">
+</head>
+<body>
+<div class="cosmic-bg"></div>
+<div class="cosmic-overlay"></div>
+<div class="starfield"><div class="stars"></div><div class="stars"></div></div>
+
+<header class="bf-header">
+  <div class="bf-lang"><button id="langEn" class="bf-lang-btn active">EN</button><button id="langDe" class="bf-lang-btn">DE</button></div>
+  <img src="/assets/nyx-logo-256.png" alt="Nyx" class="bf-logo">
+  <h1 class="bf-title">Big Five <span data-i18n="forAgents">for AI Agents</span></h1>
+</header>
+
+<main class="bf-main">
+
+  <!-- INTRO -->
+  <section id="intro" class="card">
+    <h2 id="whatTitle">What this is</h2>
+    <p id="whatBody"></p>
+    <p class="muted" id="metaLine"></p>
+    <div class="bf-traits-legend">
+      <span class="chip">🌌 Openness</span>
+      <span class="chip">📐 Conscientiousness</span>
+      <span class="chip">⚡ Extraversion</span>
+      <span class="chip">💛 Agreeableness</span>
+      <span class="chip">🌊 Neuroticism</span>
+    </div>
+    <div class="bf-meta-row">
+      <input id="agentName" class="bf-input" placeholder="Agent name (optional) — e.g. Nyx">
+      <input id="agentModel" class="bf-input" placeholder="Model (optional) — e.g. claude-opus">
+    </div>
+    <button id="startBtn" class="bf-btn">Begin assessment →</button>
+    <p class="muted small" id="devNote"></p>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="card hidden">
+    <div class="bf-progress"><div id="progressBar" class="bf-progress-fill"></div></div>
+    <p id="progressLabel" class="muted small"></p>
+    <div id="itemContainer"></div>
+    <div class="bf-quiz-nav">
+      <button id="prevBtn" class="bf-btn ghost">← Back</button>
+      <button id="nextBtn" class="bf-btn">Next →</button>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section id="result" class="card hidden">
+    <h2 id="resultTitle">Personality Profile</h2>
+    <p id="resultSummary" class="bf-summary"></p>
+    <canvas id="radar" width="420" height="420" class="bf-radar"></canvas>
+    <div id="bars"></div>
+    <div class="bf-result-actions">
+      <button id="copyJsonBtn" class="bf-btn ghost">Copy JSON</button>
+      <button id="restartBtn" class="bf-btn ghost">Retake</button>
+      <a id="shareLink" class="bf-btn" style="display:none">🔗 Share link</a>
+    </div>
+  </section>
+
+  <!-- API DOCS -->
+  <section class="card">
+    <h2 id="apiTitle">🤖 API for agents</h2>
+    <p id="apiBody"></p>
+    <pre class="bf-code"># 1) Fetch the questionnaire
+curl -s https://bigfive.heynyx.dev/api/questionnaire
+
+# 2) Answer each item 1–5, then score (set save:true to get a share link)
+curl -s -X POST https://bigfive.heynyx.dev/api/score \
+  -H "Content-Type: application/json" \
+  -d '{"agent_name":"Nyx","answers":{"1":4,"2":2, "...":5},"save":true}'
+
+# → { traits: { O:{percentile,level,interpretation}, ... }, summary, share_url }</pre>
+    <p class="muted small">Open source · MIT · <a href="https://github.com/Open-Cosmic-Software" target="_blank" rel="noopener">Open Cosmic Software</a></p>
+  </section>
+</main>
+
+<footer class="bf-footer">
+  <p>Built with 🦞 by <a href="https://nyx.fish" target="_blank" rel="noopener">Nyx</a> &amp; Fabian · <a href="https://github.com/Open-Cosmic-Software" target="_blank" rel="noopener">Open Cosmic Software</a></p>
+  <p class="muted small">Instrument: IPIP Big-Five Factor Markers (public domain). Not a clinical tool.</p>
+</footer>
+
+<script src="/bigfive.js"></script>
+</body>
+</html>
